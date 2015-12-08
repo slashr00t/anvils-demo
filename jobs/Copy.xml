@@ -1,6 +1,7 @@
 <joblist>
   <job>
     <context>
+      <project>anvils</project>
       <options preserveOrder='true'>
         <option enforcedvalues='true' name='packages' required='true' valuesUrl='http://localhost/anvils/options/packages/${option.release.value}.json'>
           <description>packages versions</description>
