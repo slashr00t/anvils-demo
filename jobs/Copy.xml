@@ -1,0 +1,60 @@
+<joblist>
+  <job>
+    <context>
+      <options preserveOrder='true'>
+        <option enforcedvalues='true' name='packages' required='true' valuesUrl='http://localhost/anvils/options/packages/${option.release.value}.json'>
+          <description>packages versions</description>
+        </option>
+        <option enforcedvalues='true' name='release' required='true' valuesUrl='http://localhost/anvils/options/releases/${option.repository.value}.json'>
+          <description>release tag</description>
+        </option>
+        <option enforcedvalues='true' name='repository' required='true' valuesUrl='http://localhost/anvils/options/repositories.json'>
+          <description>repository name</description>
+        </option>
+      </options>
+    </context>
+    <description>promote the packages to the ops repository.</description>
+    <dispatch>
+      <excludePrecedence>true</excludePrecedence>
+      <keepgoing>false</keepgoing>
+      <rankOrder>ascending</rankOrder>
+      <threadcount>1</threadcount>
+    </dispatch>
+    <executionEnabled>true</executionEnabled>
+    <group>deploy</group>
+    <loglevel>INFO</loglevel>
+    <name>Copy</name>
+    <nodefilters>
+      <filter>app.*</filter>
+    </nodefilters>
+    <nodesSelectedByDefault>true</nodesSelectedByDefault>
+    <scheduleEnabled>true</scheduleEnabled>
+    <sequence keepgoing='false' strategy='node-first'>
+      <command>
+        <description>copy packages</description>
+        <node-step-plugin type='copyfile'>
+          <configuration>
+            <entry key='destinationPath' value='/var/www/html/anvils/app/' />
+            <entry key='echo' value='true' />
+            <entry key='sourcePath' value='packages/${option.repository}/${option.release}/${option.packages}' />
+          </configuration>
+        </node-step-plugin>
+      </command>
+      <command>
+        <script><![CDATA[#!/bin/bash
+
+umask 0000
+
+echo "Unpacking $RD_OPTION_PACKAGES"
+cd /var/www/html/anvils/app/
+tar xzvf $RD_OPTION_PACKAGES
+
+echo "Unpacking $RD_OPTION_PACKAGES"
+rm $RD_OPTION_PACKAGES
+
+echo "Done - see http://192.168.50.2/anvils/app/"]]></script>
+        <scriptargs />
+      </command>
+    </sequence>
+  </job>
+</joblist>
