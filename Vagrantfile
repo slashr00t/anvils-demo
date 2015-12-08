@@ -17,5 +17,6 @@ Vagrant.configure("2") do |config|
         rundeck.vm.provision :shell, :path => "install-rundeck-admin.sh", :args => "https://bintray.com/rerun/rerun-rpm/rpm http://#{RDIP}:4440"
 
 		rundeck.vm.provision :shell, :path => "add-project.sh", :args => "#{PROJECT}"
+		rundeck.vm.provision :shell, :path => "prep-pkgs.sh"
 	end
 end
